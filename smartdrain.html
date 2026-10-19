@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>SMARTDRAIN – Monitoring Saluran Air Berbasis IoT</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#dfeaee;--card:#fbfaf7;--ink:#12263a;--mute:#53636f;--teal:#2a9d96;--teal-d:#1f7f79;--line:#d9dfe0;--soft:#eef4f3;--on:#fff;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0b161d;--card:#111f28;--ink:#eaf2f4;--mute:#9db0b8;--teal:#3cc0b8;--teal-d:#2a9d96;--line:#243742;--soft:#162833;--on:#06201e}}
+:root[data-theme="dark"]{--bg:#0b161d;--card:#111f28;--ink:#eaf2f4;--mute:#9db0b8;--teal:#3cc0b8;--teal-d:#2a9d96;--line:#243742;--soft:#162833;--on:#06201e}
+*{box-sizing:border-box;margin:0}
+html{scroll-behavior:smooth;scroll-padding-top:80px}
+body{background:var(--bg);color:var(--ink);font-family:Inter,system-ui,-apple-system,Segoe UI,sans-serif;line-height:1.6;padding:clamp(10px,3vw,40px)}
+.wrap{max-width:1140px;margin:0 auto;background:var(--card);border-radius:14px;box-shadow:0 30px 60px -30px rgba(18,38,58,.35);overflow:hidden}
+nav{display:flex;align-items:center;gap:28px;padding:20px clamp(18px,4vw,44px);position:sticky;top:0;background:var(--card);z-index:5;border-bottom:1px solid transparent}
+nav .logo{display:flex;align-items:center;gap:8px;font-weight:700;letter-spacing:.02em;color:var(--ink);text-decoration:none}
+nav .links{display:flex;gap:26px;flex:1;margin-left:14px}
+nav a{font-size:13px;color:var(--ink);text-decoration:none;opacity:.85}
+nav a:hover{color:var(--teal)}
+.pill{background:var(--teal);color:var(--on);padding:10px 24px;border-radius:99px;font-size:13px;font-weight:500;opacity:1}
+.pill:hover{background:var(--teal-d);color:var(--on)}
+.hero{display:grid;grid-template-columns:1.25fr .75fr;gap:10px;padding:10px clamp(18px,4vw,44px) 0;position:relative;min-height:600px}
+.hl{position:relative;z-index:2;padding-top:20px}
+h1{font-size:clamp(40px,7vw,84px);line-height:1.02;letter-spacing:-.035em;font-weight:700;max-width:9.5em}
+.count{display:flex;align-items:center;gap:14px;margin-top:34px;font-size:12px;font-weight:600}
+.count i{display:block;width:56px;height:1px;background:var(--mute)}
+.count span{color:var(--mute);font-weight:400}
+.dev{position:absolute;left:12%;right:30%;top:150px;bottom:0;z-index:1;display:flex;align-items:flex-end}
+.dev svg{width:100%;height:auto;max-height:100%}
+.hr{align-self:center;position:relative;z-index:2;padding:20px 0}
+.tag{font-size:10px;letter-spacing:.18em;font-weight:600;color:var(--teal);text-transform:uppercase;margin-bottom:22px}
+.hr p.d{font-size:16px;color:var(--mute);max-width:260px}
+.hr hr{border:0;border-top:1px solid var(--line);width:56px;margin:34px 0}
+.stats{display:flex}
+.stats div{padding:0 18px;border-left:1px solid var(--line)}
+.stats div:first-child{padding-left:0;border:0}
+.stats b{display:block;font-size:17px;font-weight:600}
+.stats small{font-size:12px;color:var(--mute)}
+.bar{display:flex;justify-content:space-between;align-items:center;padding:16px clamp(18px,4vw,44px);font-size:11px;letter-spacing:.22em;font-weight:500;border-top:1px solid var(--line);background:var(--soft)}
+.arr{display:flex;gap:10px}
+.arr button{width:32px;height:32px;border-radius:50%;border:0;background:var(--line);color:var(--ink);cursor:pointer;font-size:14px}
+.arr button.on{background:var(--teal);color:var(--on)}
+.fade{animation:f .5s ease}
+@keyframes f{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+section{padding:clamp(50px,8vw,96px) clamp(18px,4vw,44px)}
+section.alt{background:var(--soft)}
+.eyebrow{font-size:11px;letter-spacing:.18em;font-weight:600;color:var(--teal);text-transform:uppercase;margin-bottom:12px}
+h2{font-size:clamp(28px,4vw,44px);line-height:1.1;letter-spacing:-.025em;font-weight:700;max-width:16em}
+.lead{color:var(--mute);max-width:620px;margin-top:16px;font-size:17px}
+.grid{display:grid;gap:18px;margin-top:40px;grid-template-columns:repeat(auto-fit,minmax(230px,1fr))}
+.c{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:24px}
+section.alt .c{background:var(--card)}
+.c h3{font-size:16px;margin:10px 0 6px;font-weight:600}
+.c p{font-size:14px;color:var(--mute)}
+.n{width:34px;height:34px;border-radius:50%;background:var(--teal);color:var(--on);display:grid;place-items:center;font-weight:600;font-size:14px}
+.chips{display:flex;flex-wrap:wrap;gap:10px;margin-top:36px}
+.chips span{border:1px solid var(--line);background:var(--card);padding:8px 16px;border-radius:99px;font-size:13px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:start}
+.status{display:grid;gap:12px;margin-top:8px}
+.status div{display:flex;justify-content:space-between;gap:16px;padding:14px 0;border-bottom:1px solid var(--line);font-size:14px}
+.status span{color:var(--mute)}
+.price{font-size:clamp(40px,6vw,64px);font-weight:700;letter-spacing:-.03em}
+.price small{font-size:16px;color:var(--mute);font-weight:400;letter-spacing:0}
+.team .c{text-align:left}
+.av{width:44px;height:44px;border-radius:50%;background:var(--soft);color:var(--teal);display:grid;place-items:center;font-weight:700;font-size:13px;border:1px solid var(--line)}
+.role{font-size:11px;letter-spacing:.14em;color:var(--teal);font-weight:600}
+footer{padding:36px clamp(18px,4vw,44px);display:flex;flex-wrap:wrap;gap:12px;justify-content:space-between;font-size:13px;color:var(--mute);border-top:1px solid var(--line)}
+@media(max-width:820px){
+ nav .links{display:none}nav{justify-content:space-between}
+ .hero{grid-template-columns:1fr;min-height:0}
+ .dev{position:static;order:2;padding:0}
+ .hr{order:3;padding-bottom:30px}
+ .two{grid-template-columns:1fr}
+ .count{margin-top:18px}
+}
+</style>
+</head>
+<body>
+<div class="wrap" id="app"></div>
+
+<!-- ====== DATA JSON: edit isi web di sini ====== -->
+<script type="application/json" id="data">
+{
+  "brand": {"name": "SMARTDRAIN", "tagline": "Waspada Banjir Membunuhmu", "full": "Sistem Monitoring Saluran Air Berbasis IoT"},
+  "nav": [["Produk","#produk"],["Teknologi","#teknologi"],["Cerita Kami","#cerita"],["Tim","#tim"]],
+  "cta": {"label": "Hubungi Kami", "href": "#kontak"},
+  "slides": [
+    {"h1":"Pantau Saluran,\nCegah Banjir","tag":"Deteksi dini genangan","desc":"Sensor ultrasonik mengukur ketinggian air saluran drainase secara real-time dan menampilkannya di dashboard yang bisa dibuka dari laptop atau HP.","stats":[["Real-time","Pengukuran"],["Dashboard","Web & HP"],["Berkala","Data tersimpan"]]},
+    {"h1":"Peringatan Dini,\nSebelum Meluap","tag":"Early warning otomatis","desc":"Saat air mencapai ambang siaga, notifikasi langsung dikirim ke pengguna melalui platform seperti WhatsApp, sehingga tindakan bisa dilakukan lebih cepat.","stats":[["Siaga","Ambang batas"],["WhatsApp","Notifikasi"],["Otomatis","Tanpa cek manual"]]},
+    {"h1":"Mandiri Energi,\nSiap di Lokasi Terpencil","tag":"Panel surya + baterai","desc":"Ditenagai panel surya mini dan baterai Li-ion, SMARTDRAIN tetap menyala di titik saluran yang minim atau tanpa akses listrik.","stats":[["Surya","Sumber daya"],["Li-ion","Cadangan"],["Plug & play","Perawatan minim"]]},
+    {"h1":"Tahan Hujan,\nPasang Mudah","tag":"Waterproof & ringkas","desc":"Enclosure tahan air melindungi elektronik dari hujan deras dan kelembapan tinggi. Bracket sederhana dipasang langsung di saluran atau gorong-gorong.","stats":[["Waterproof","Enclosure"],["Bracket","Pasang cepat"],["Lokal","Komponen mudah"]]}
+  ],
+  "problem": {
+    "eyebrow":"Mengapa SMARTDRAIN",
+    "title":"Banjir sering baru diketahui setelah air meluap.",
+    "text":"Di Karawang, saluran drainase kerap tersumbat sampah dan material lain, sementara pemantauan manual butuh tenaga, waktu, dan pengecekan berkala di banyak titik. Akibatnya, kenaikan air sering terdeteksi terlambat ketika kondisi sudah kritis.",
+    "items":[["Pemantauan manual","Bergantung pada pengecekan fisik petugas, tidak bisa terus-menerus."],["Terlambat tahu","Informasi baru ada setelah genangan terjadi dan warga tak sempat bersiap."],["Data tidak tercatat","Riwayat ketinggian air sulit dianalisis untuk perencanaan jangka panjang."]]
+  },
+  "how": {
+    "eyebrow":"Cara kerja","title":"Dari sensor ke notifikasi dalam empat langkah.",
+    "steps":[["Ukur","Sensor ultrasonik waterproof membaca jarak ke permukaan air di saluran."],["Proses","Mikrokontroler ESP32 dan modul RTC mengolah data lengkap dengan waktu."],["Kirim","Data dikirim lewat internet ke platform IoT dan tersimpan otomatis."],["Beri tahu","Dashboard menampilkan kondisi, dan notifikasi dikirim saat air mencapai batas siaga."]]
+  },
+  "features": {
+    "eyebrow":"Keunggulan","title":"Dirancang untuk lapangan, bukan hanya laboratorium.",
+    "items":[["Monitoring real-time","Dashboard digital yang bisa diakses kapan saja."],["Peringatan dini otomatis","Notifikasi saat air mencapai ambang siaga."],["Daya mandiri","Panel surya dan baterai untuk lokasi terpencil."],["Desain waterproof","Tahan hujan dan kelembapan tinggi."],["Biaya terjangkau","Komponen elektronik lokal yang mudah didapat."],["Pasang sederhana","Bracket ringkas untuk saluran atau gorong-gorong."],["Data historis","Tersimpan otomatis untuk analisis dan pelaporan."],["Perawatan minim","Mudah dioperasikan oleh non-teknisi."]]
+  },
+  "tech": {
+    "eyebrow":"Teknologi","title":"Komponen di dalam SMARTDRAIN",
+    "chips":["Microcontroller ESP32","Sensor ultrasonik waterproof","Modul RTC","Baterai Li-ion 18650","Panel surya mini","Enclosure waterproof","Konektor waterproof","Bracket pemasangan","Platform IoT & dashboard"]
+  },
+  "users": {
+    "eyebrow":"Untuk siapa","title":"Satu sistem, banyak pengguna.",
+    "items":[["Instansi pemerintah","Dinas PU, BPBD, pemerintah desa dan kelurahan pengelola saluran air dan mitigasi bencana."],["Kawasan perumahan & industri","Pengelola yang perlu memantau drainase untuk mencegah kerugian akibat banjir."],["Warga wilayah rawan banjir","Sistem peringatan dini sederhana untuk daerah dengan riwayat genangan."],["Komunitas peduli lingkungan & smart city","Pendukung teknologi untuk tata kelola kota yang lebih cerdas dan berkelanjutan."]]
+  },
+  "story": {
+    "eyebrow":"Cerita kami","title":"Tujuan mulia: mengurangi risiko banjir dan menyelamatkan yang berharga.",
+    "text":"Dengan data ketinggian air real-time, SMARTDRAIN ingin menciptakan peringatan dini yang mencegah kerugian material maupun korban jiwa, serta membantu pemerintah dan masyarakat mengambil keputusan lebih cepat dan tepat. Proyek ini dirancang pada 2026 oleh mahasiswa S1 Teknik Lingkungan UNSIKA sebagai penerapan ilmu teknik lingkungan untuk mitigasi banjir di Kabupaten Karawang.",
+    "status":[["Tahap","Perencanaan dan pengembangan purwarupa"],["Kategori","Teknologi dan Lingkungan"],["Lokasi uji coba","Telukjambe Timur, Karawang"],["Didirikan","September 2026"]]
+  },
+  "price": {"eyebrow":"Harga","amount":"Rp500.000","unit":"/ unit","note":"Target harga sudah termasuk perangkat dan akses dashboard monitoring. Skema layanan instalasi, kalibrasi, dan pemeliharaan dapat dikembangkan untuk kebutuhan instansi."},
+  "team": {
+    "eyebrow":"Tim","title":"Mahasiswa Teknik Lingkungan, Universitas Singaperbangsa Karawang.",
+    "members":[["Sandrina Aidha Anwar","CEO","Arah strategis dan kemitraan"],["Irfan Akmal Fauzan","CMO","Pemasaran dan branding"],["Riana Virgita Suciyani","CFO","Anggaran dan proyeksi keuangan"],["Damar Rahardian Hanafi","CTO","Sistem, sensor, dan program IoT"],["Naufal Fikrianto","COO","Produksi, QC, dan instalasi"]]
+  },
+  "contact": {"title":"Tertarik uji coba SMARTDRAIN?","text":"Hubungi tim kami untuk diskusi kerja sama, demo prototipe, atau pemasangan percontohan.","email":"","instagram":""},
+  "footer": {"left":"© 2026 SMARTDRAIN · Program Studi S1 Teknik Lingkungan, Fakultas Teknik, UNSIKA","right":"Karawang, Jawa Barat"}
+}
+</script>
+
+<script>
+const D = JSON.parse(document.getElementById('data').textContent);
+const $ = (s, r=document) => r.querySelector(s);
+const esc = s => String(s).replace(/[&<>]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
+const initials = n => n.split(' ').slice(0,2).map(w => w[0]).join('');
+
+const device = `<svg viewBox="0 0 560 440" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Ilustrasi perangkat SMARTDRAIN di atas saluran air">
+<defs>
+<linearGradient id="bd" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f4f2ee"/><stop offset="1" stop-color="#c9ccc9"/></linearGradient>
+<linearGradient id="wt" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#7fd1cb" stop-opacity=".75"/><stop offset="1" stop-color="#2a9d96" stop-opacity=".9"/></linearGradient>
+</defs>
+<ellipse cx="280" cy="418" rx="240" ry="14" fill="#12263a" opacity=".08"/>
+<!-- saluran -->
+<path d="M30 300 L70 420 H490 L530 300 Z" fill="#b9c2c4"/>
+<path d="M62 300 L96 400 H464 L498 300 Z" fill="#dfe6e7"/>
+<path d="M82 352 H478 L464 400 H96 Z" fill="url(#wt)"/>
+<path d="M90 352 Q160 340 230 352 T370 352 T478 352" fill="none" stroke="#fff" stroke-opacity=".8" stroke-width="3"/>
+<!-- bracket -->
+<rect x="40" y="286" width="480" height="16" rx="4" fill="#9aa5a8"/>
+<rect x="268" y="236" width="24" height="56" rx="4" fill="#8f9b9e"/>
+<!-- body -->
+<rect x="170" y="128" width="220" height="116" rx="22" fill="url(#bd)" stroke="#fff" stroke-width="2"/>
+<rect x="196" y="150" width="108" height="72" rx="10" fill="#12263a" opacity=".92"/>
+<circle cx="214" cy="170" r="4" fill="#3cc0b8"/><circle cx="228" cy="170" r="4" fill="#f2c14e"/>
+<path d="M210 204 L232 190 L252 198 L276 178 L292 186" fill="none" stroke="#3cc0b8" stroke-width="3" stroke-linecap="round"/>
+<circle cx="348" cy="186" r="26" fill="#d7f0ee" stroke="#2a9d96" stroke-width="4"/>
+<path d="M348 172 q10 14 0 24 q-10 -10 0 -24z" fill="#2a9d96"/>
+<!-- panel surya -->
+<g transform="rotate(-14 280 96)"><rect x="196" y="72" width="168" height="48" rx="6" fill="#1c3a52"/>
+<path d="M252 72V120M308 72V120M196 96H364" stroke="#6fa3c4" stroke-opacity=".6"/></g>
+<rect x="268" y="118" width="24" height="12" fill="#8f9b9e"/>
+<!-- sensor -->
+<rect x="246" y="244" width="68" height="20" rx="8" fill="#2a9d96"/>
+<ellipse cx="268" cy="270" rx="12" ry="6" fill="#12263a"/><ellipse cx="292" cy="270" rx="12" ry="6" fill="#12263a"/>
+<!-- gelombang ultrasonik -->
+<g fill="none" stroke="#2a9d96" stroke-width="2.5" stroke-linecap="round" stroke-dasharray="2 8">
+<path d="M262 290 Q280 330 240 352"/><path d="M280 290 V350"/><path d="M298 290 Q280 330 320 352"/></g>
+<circle cx="280" cy="352" r="5" fill="#fff" stroke="#2a9d96" stroke-width="2"/>
+</svg>`;
+
+function render(){
+  const a = $('#app');
+  const s0 = D.slides[0];
+  a.innerHTML = `
+  <nav>
+    <a class="logo" href="#top"><svg width="22" height="26" viewBox="0 0 22 26"><path d="M11 2 C11 2 3 12 3 17 a8 8 0 0 0 16 0 C19 12 11 2 11 2z" fill="none" stroke="var(--teal)" stroke-width="2"/></svg>${esc(D.brand.name)}</a>
+    <div class="links">${D.nav.map(n=>`<a href="${n[1]}">${esc(n[0])}</a>`).join('')}</div>
+    <a class="pill" href="${D.cta.href}">${esc(D.cta.label)}</a>
+  </nav>
+  <header class="hero" id="top">
+    <div class="hl"><h1 id="h1"></h1>
+      <div class="count"><b id="cur">01</b><span id="tot"></span><i></i></div></div>
+    <div class="dev">${device}</div>
+    <div class="hr"><div class="tag" id="tag"></div><p class="d" id="desc"></p><hr><div class="stats" id="stats"></div></div>
+  </header>
+  <div class="bar"><span>${esc(D.brand.full.toUpperCase())}</span>
+    <div class="arr"><button id="prev" aria-label="Sebelumnya">‹</button><button id="next" class="on" aria-label="Berikutnya">›</button></div></div>
+
+  <section id="produk" class="alt"><div class="eyebrow">${esc(D.problem.eyebrow)}</div><h2>${esc(D.problem.title)}</h2>
+    <p class="lead">${esc(D.problem.text)}</p>
+    <div class="grid">${D.problem.items.map((x,i)=>`<div class="c"><div class="n">${i+1}</div><h3>${esc(x[0])}</h3><p>${esc(x[1])}</p></div>`).join('')}</div></section>
+
+  <section><div class="eyebrow">${esc(D.how.eyebrow)}</div><h2>${esc(D.how.title)}</h2>
+    <div class="grid">${D.how.steps.map((x,i)=>`<div class="c"><div class="n">${i+1}</div><h3>${esc(x[0])}</h3><p>${esc(x[1])}</p></div>`).join('')}</div></section>
+
+  <section class="alt"><div class="eyebrow">${esc(D.features.eyebrow)}</div><h2>${esc(D.features.title)}</h2>
+    <div class="grid">${D.features.items.map(x=>`<div class="c"><h3>${esc(x[0])}</h3><p>${esc(x[1])}</p></div>`).join('')}</div></section>
+
+  <section id="teknologi"><div class="eyebrow">${esc(D.tech.eyebrow)}</div><h2>${esc(D.tech.title)}</h2>
+    <div class="chips">${D.tech.chips.map(x=>`<span>${esc(x)}</span>`).join('')}</div></section>
+
+  <section class="alt"><div class="eyebrow">${esc(D.users.eyebrow)}</div><h2>${esc(D.users.title)}</h2>
+    <div class="grid">${D.users.items.map(x=>`<div class="c"><h3>${esc(x[0])}</h3><p>${esc(x[1])}</p></div>`).join('')}</div></section>
+
+  <section id="cerita"><div class="two"><div><div class="eyebrow">${esc(D.story.eyebrow)}</div><h2>${esc(D.story.title)}</h2>
+    <p class="lead">${esc(D.story.text)}</p></div>
+    <div><div class="status">${D.story.status.map(x=>`<div><span>${esc(x[0])}</span><b>${esc(x[1])}</b></div>`).join('')}</div>
+    <div style="margin-top:36px"><div class="eyebrow">${esc(D.price.eyebrow)}</div><div class="price">${esc(D.price.amount)} <small>${esc(D.price.unit)}</small></div>
+    <p class="lead" style="font-size:14px">${esc(D.price.note)}</p></div></div></div></section>
+
+  <section id="tim" class="alt team"><div class="eyebrow">${esc(D.team.eyebrow)}</div><h2>${esc(D.team.title)}</h2>
+    <div class="grid">${D.team.members.map(m=>`<div class="c"><div class="av">${initials(m[0])}</div><h3>${esc(m[0])}</h3><div class="role">${esc(m[1])}</div><p style="margin-top:6px">${esc(m[2])}</p></div>`).join('')}</div></section>
+
+  <section id="kontak"><h2>${esc(D.contact.title)}</h2><p class="lead">${esc(D.contact.text)}</p>
+    <p style="margin-top:24px;display:flex;gap:12px;flex-wrap:wrap">
+    ${D.contact.email?`<a class="pill" style="text-decoration:none" href="mailto:${esc(D.contact.email)}">${esc(D.contact.email)}</a>`:''}
+    ${D.contact.instagram?`<a class="pill" style="text-decoration:none" href="https://instagram.com/${esc(D.contact.instagram)}">@${esc(D.contact.instagram)}</a>`:''}</p></section>
+
+  <footer><span>${esc(D.footer.left)}</span><span>“${esc(D.brand.tagline)}”</span><span>${esc(D.footer.right)}</span></footer>`;
+
+  let i = 0;
+  const show = () => {
+    const s = D.slides[i];
+    $('#h1').innerHTML = esc(s.h1).replace('\n','<br>');
+    $('#tag').innerHTML = esc(s.tag).replace(/ /g,'<br>').replace(/^(.*?<br>.*?)<br>/,'$1 ');
+    $('#desc').textContent = s.desc;
+    $('#stats').innerHTML = s.stats.map(t=>`<div><b>${esc(t[0])}</b><small>${esc(t[1])}</small></div>`).join('');
+    $('#cur').textContent = String(i+1).padStart(2,'0');
+    $('#tot').textContent = '/ ' + String(D.slides.length).padStart(2,'0');
+    document.querySelectorAll('#h1,.hr').forEach(e=>{e.classList.remove('fade');void e.offsetWidth;e.classList.add('fade')});
+  };
+  const go = d => { i = (i + d + D.slides.length) % D.slides.length; show(); };
+  $('#prev').onclick = () => go(-1);
+  $('#next').onclick = () => go(1);
+  show();
+  setInterval(() => go(1), 8000);
+}
+render();
+</script>
+</body>
+</html>
